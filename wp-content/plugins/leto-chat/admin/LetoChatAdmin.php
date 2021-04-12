@@ -23,13 +23,26 @@ class LetoChatAdmin
 		$this->publicViewFacade = LetoChatPublicViewFacade::getInstance();
 	}
 
-	public function enqueue_styles()
+	public function enqueue_styles($hook)
 	{
-		wp_enqueue_style($this->pluginName, '', [], $this->version, 'all');
+		if ($hook != 'toplevel_page_letochat') {
+			return;
+		}
+
+		wp_enqueue_style($this->pluginName, PLUGIN_LETO_CHAT_URL . 'admin/css/style.css', [], $this->version, 'all');
 	}
 
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script($this->pluginName, '', ['jquery'], $this->version, false );
+		if ($hook != 'toplevel_page_letochat') {
+			return;
+		}
+
+		wp_enqueue_script($this->pluginName, '', ['jquery'], $this->version, false);
+	}
+
+	public function adminMenu()
+	{
+		$this->adminViewFacade->adminMenu();
 	}
 }

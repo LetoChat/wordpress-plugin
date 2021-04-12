@@ -57,6 +57,7 @@ class LetoChat
 	{
 		$this->loader->add_action('admin_enqueue_scripts', $this->adminView, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $this->adminView, 'enqueue_scripts');
+		$this->loader->add_action('admin_menu', $this->adminView, 'adminMenu');
 	}
 
 	private function definePublicHooks()

@@ -27,9 +27,9 @@ use LetoChat\Includes\LetoChatDeactivator;
 use LetoChat\Includes\LetoChat;
 
 define('LETOCHAT_VERSION', '1.0.0');
-define('PLUGIN_LETOCHAT_PATH', plugin_dir_path(__FILE__));
-define('PLUGIN_LETOCHAT_URL', plugin_dir_url(__FILE__));
-define('PLUGIN_LETOCHAT_SLUG', plugin_basename(__FILE__));
+define('PLUGIN_LETO_CHAT_PATH', plugin_dir_path(__FILE__));
+define('PLUGIN_LETO_CHAT_URL', plugin_dir_url(__FILE__));
+define('PLUGIN_LETO_CHAT_SLUG', plugin_basename(__FILE__));
 
 function create_leto_chat_constants()
 {
