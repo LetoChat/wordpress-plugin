@@ -1,0 +1,48 @@
+[
+    {
+        "name": "letochat/plugin5",
+        "version": "dev-main",
+        "version_normalized": "dev-main",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/LetoChat/plugin5.git",
+            "reference": "6223160063fbc8ee463e83bbc0203ae137a25590"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/LetoChat/plugin5/zipball/6223160063fbc8ee463e83bbc0203ae137a25590",
+            "reference": "6223160063fbc8ee463e83bbc0203ae137a25590",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.6.0"
+        },
+        "time": "2021-04-12T12:33:47+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "LetoChat\\": "src/"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "description": "You can use this repo to advance integrate your website with LetoChat Platform.",
+        "homepage": "https://www.letochat.com",
+        "keywords": [
+            "agents",
+            "b2c communication tool",
+            "helpdesk",
+            "live chat",
+            "messaging",
+            "support tool",
+            "widget"
+        ],
+        "support": {
+            "email": "technical@letochat.com",
+            "issues": "https://www.letochat.com/support/technical",
+            "source": "https://github.com/LetoChat/plugin5/tree/main"
+        }
+    }
+]

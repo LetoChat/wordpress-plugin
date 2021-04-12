@@ -1,0 +1,25 @@
+{
+  "autoload": {
+    "psr-4": {
+      "LetoChat\\AdminView\\": "admin",
+      "LetoChat\\PublicView\\": "public",
+      "LetoChat\\Includes\\": "includes",
+      "LetoChat\\Config\\": "config"
+    },
+    "classmap": [
+      "admin",
+      "public",
+      "includes",
+      "config"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/LetoChat/plugin5.git"
+    }
+  ],
+  "require": {
+    "LetoChat/plugin5": "dev-main"
+  }
+}
