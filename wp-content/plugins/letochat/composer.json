@@ -1,0 +1,16 @@
+{
+  "autoload": {
+      "psr-4": {
+        "Letochat\\AdminView\\": "admin",
+        "Letochat\\PublicView\\": "public",
+        "Letochat\\Includes\\": "includes",
+        "Letochat\\Config\\": "config"
+      },
+      "classmap": [
+      "admin",
+      "public",
+      "includes",
+      "config"
+    ]
+    }
+}
