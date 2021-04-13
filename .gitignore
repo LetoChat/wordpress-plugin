@@ -32,7 +32,7 @@
 
 # ignore everything in the root except the "wp-content" directory.
 /*
-!wp-config.php
+#!wp-config.php
 !wp-content/
 
 # ignore all files starting with .
@@ -88,10 +88,10 @@ Thumbs.db
 wp-content/*
 !wp-content/mu-plugins/
 !wp-content/plugins/
-!wp-content/themes/
+!wp-content/themes/*
 
 wp-content/plugins/*
-!wp-content/plugins/leto-chat
+!wp-content/plugins/letochat
 
 # ignore these plugins
 wp-content/plugins/hello.php
