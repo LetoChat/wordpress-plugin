@@ -16,4 +16,9 @@ class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
 
         return static::$instance;
     }
+
+    public function addScript()
+    {
+        $this->getFactory()->createWidget()->addScript();
+    }
 }

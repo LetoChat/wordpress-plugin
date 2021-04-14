@@ -67,6 +67,7 @@ class LetoChat
 		// Actions
 		$this->loader->add_action('wp_enqueue_scripts', $this->publicView, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $this->publicView, 'enqueue_scripts');
+		$this->loader->add_action('wp_footer', $this->publicView, 'addScript');
 	}
 
 	public function run()

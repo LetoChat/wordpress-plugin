@@ -32,4 +32,9 @@ class LetoChatPublic
 	{
 //		wp_enqueue_script($this->pluginName, '', ['jquery'], $this->version, false );
 	}
+
+    public function addScript()
+    {
+        $this->publicViewFacade->addScript();
+    }
 }
