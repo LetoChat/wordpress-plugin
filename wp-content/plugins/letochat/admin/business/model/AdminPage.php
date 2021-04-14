@@ -110,12 +110,23 @@ class AdminPage implements AdminPageInterface
 
         if ($switcherType === 'enable_widget') {
             $this->updateSwitcherByType($settingsOptions['enable_widget'], $switcherStatus);
+
+            if ($switcherStatus === 'off') {
+                $this->pluginResponse->message = __('The widget is disabled.', 'letochat');
+            } else {
+                $this->pluginResponse->message = __('The widget is enabled.', 'letochat');
+            }
         } elseif ($switcherType === 'visible_for_admins') {
             $this->updateSwitcherByType($settingsOptions['visible_for_admins'], $switcherStatus);
+
+            if ($switcherStatus === 'off') {
+                $this->pluginResponse->message = __('The widget is not visible for admins.', 'letochat');
+            } else {
+                $this->pluginResponse->message = __('The widget is visible for admins.', 'letochat');
+            }
         }
 
         $this->pluginResponse->isSuccess = true;
-        $this->pluginResponse->message = __('Status changed successfully!', 'letochat');
 
         echo json_encode($this->pluginResponse);
 

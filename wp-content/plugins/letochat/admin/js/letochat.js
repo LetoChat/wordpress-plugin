@@ -1,6 +1,36 @@
 (function ($) {
     "use strict";
 
+    if (typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined' && typeof navigator.clipboard.readText !== 'undefined') {
+        let pasteDataButton = $("#paste-data");
+
+        pasteDataButton.show();
+
+        pasteDataButton.click(function(e) {
+            e.preventDefault();
+
+            navigator.clipboard.readText().then(function(message) {
+                populateLetoChatKeys(message);
+            });
+        });
+    }
+
+    $('form#leto-chat-data-form input[type=text]').on('paste', function (e) {
+        e.preventDefault();
+
+        let pasteData = e.originalEvent.clipboardData.getData('text');
+
+        populateLetoChatKeys(pasteData);
+    });
+
+    let channelId = $('#channel-id').val();
+    let channelSecret = $('#channel-secret').val();
+    let authSecret = $('#auth-secret').val();
+
+    if (channelId !== '' && channelSecret !== '' && authSecret !== '') {
+        connectToLetoChatAjax();
+    }
+
     $("form#leto-chat-data-form").on('submit', function (e) {
         e.preventDefault();
 
@@ -16,6 +46,48 @@
             return false;
         }
 
+        connectToLetoChatAjax();
+    });
+
+    $('#enable-widget').change( function() {
+       let status = $('#enable-widget:checked').val();
+
+       if (status === undefined) {
+           status = 'off';
+       } else if (status === 'true') {
+           status = 'on';
+       }
+
+        switcherAction('enable_widget', status);
+    });
+
+    $('#visible-for-admins').change( function() {
+        let status = $('#visible-for-admins:checked').val();
+
+        if (status === undefined) {
+            status = 'off';
+        } else if (status === 'true') {
+            status = 'on';
+        }
+
+        switcherAction('visible_for_admins', status);
+    });
+
+    function populateLetoChatKeys(pasteData) {
+        if (pasteData.indexOf('letochat:') >= 0) {
+            pasteData = pasteData.replace('letochat:', '');
+
+            let keys = pasteData.split(',');
+
+            $('#channel-id').val(keys[0]);
+            $('#channel-secret').val(keys[1]);
+            $('#auth-secret').val(keys[2]);
+        } else {
+            $(this).val(pasteData);
+        }
+    }
+
+    function connectToLetoChatAjax() {
         let data = {
             action: 'letochat_check_data',
             security: ajax_letochat_admin_object.ajax_nonce,
@@ -47,31 +119,7 @@
                 Notiflix.Loading.Remove();
             },
         });
-    });
-
-    $('#enable-widget').change( function() {
-       let status = $('#enable-widget:checked').val();
-
-       if (status === undefined) {
-           status = 'off';
-       } else if (status === 'true') {
-           status = 'on';
-       }
-
-        switcherAction('enable_widget', status);
-    });
-
-    $('#visible-for-admins').change( function() {
-        let status = $('#visible-for-admins:checked').val();
-
-        if (status === undefined) {
-            status = 'off';
-        } else if (status === 'true') {
-            status = 'on';
-        }
-
-        switcherAction('visible_for_admins', status);
-    });
+    }
 
     function switcherAction(type, status) {
         $.ajax({
