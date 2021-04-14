@@ -6,21 +6,21 @@ abstract class AbstractFacade
 {
     final public function getFactory()
     {
-        $className = sprintf('\%s\PublicView\Business\%sBusinessFactory', $this->getPluginName(), $this->getPluginName());
+        $className = sprintf('\%s\PublicView\Business\%sBusinessFactory', 'LetoChat', 'LetoChat');
 
         return new $className();
     }
 
     final public function getEntityManager()
     {
-        $className = sprintf('\%s\PublicView\Persistence\%sEntityManager', $this->getPluginName(), $this->getPluginName());
+        $className = sprintf('\%s\PublicView\Persistence\%sEntityManager', 'LetoChat', 'LetoChat');
 
         return new $className();
     }
 
     final public function getRepository()
     {
-        $className = sprintf('\%s\PublicView\Persistence\%sRepository', $this->getPluginName(), $this->getPluginName());
+        $className = sprintf('\%s\PublicView\Persistence\%sRepository', 'LetoChat', 'LetoChat');
 
         return new $className();
     }

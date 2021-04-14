@@ -15,6 +15,10 @@ class ComposerStaticInit7b82913d42fa3ea7bfa6cbe52fd9718b
             'LetoChat\\AdminView\\' => 19,
             'LetoChat\\' => 9,
         ),
+        'D' => 
+        array (
+            'Defuse\\Crypto\\' => 14,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -37,6 +41,10 @@ class ComposerStaticInit7b82913d42fa3ea7bfa6cbe52fd9718b
         'LetoChat\\' => 
         array (
             0 => __DIR__ . '/..' . '/letochat/plugin5/src',
+        ),
+        'Defuse\\Crypto\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
     );
 

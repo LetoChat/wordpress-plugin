@@ -30,12 +30,21 @@ define('LETOCHAT_VERSION', '1.0.0');
 define('PLUGIN_LETO_CHAT_PATH', plugin_dir_path(__FILE__));
 define('PLUGIN_LETO_CHAT_URL', plugin_dir_url(__FILE__));
 define('PLUGIN_LETO_CHAT_SLUG', plugin_basename(__FILE__));
+define('PLUGIN_LETO_CHAT_KEY_STRING', 'def000009833b4f23e5e941a3bbc67681a19537fc63434786b8273b8637eb4996027405a509aefb3e63aae4717d82749d1d265a176222e51e7d27ad13b10147ea6fba2b1');
+define('PLUGIN_LETO_CHAT_SETTINGS_OPTIONS', [
+    'is_connected' => 'letochat_is_connected',
+    'channel_id' => 'letochat_channel_id',
+    'channel_secret' => 'letochat_channel_secret',
+    'auth_secret' => 'letochat_auth_secret',
+    'enable_widget' => 'letochat_enable_widget',
+    'visible_for_admins' => 'letochat_visible_for_admins',
+]);
 
-function create_leto_chat_constants()
+function create_leto_chat_env_constant()
 {
     define('PLUGIN_LETO_CHAT_ENVIRONMENT_TYPE', wp_get_environment_type());
 }
-add_action('plugins_loaded', 'create_leto_chat_constants');
+add_action('plugins_loaded', 'create_leto_chat_env_constant');
 
 function leto_chat_activate_plugin()
 {

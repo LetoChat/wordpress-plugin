@@ -22,8 +22,13 @@ class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
         $this->getFactory()->createAdminPage()->adminMenu();
     }
 
-    public function checkLetoChatData()
+    public function connectToLetoChat()
     {
-        $this->getFactory()->createAdminPage()->checkLetoChatData();
+        $this->getFactory()->createAdminPage()->connectToLetoChat();
+    }
+
+    public function switcherAjaxCall()
+    {
+        $this->getFactory()->createAdminPage()->switcherAjaxCall();
     }
 }

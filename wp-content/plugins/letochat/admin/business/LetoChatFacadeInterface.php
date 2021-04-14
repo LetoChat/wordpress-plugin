@@ -6,5 +6,7 @@ interface LetoChatFacadeInterface
 {
     public function adminMenu();
 
-    public function checkLetoChatData();
+    public function connectToLetoChat();
+
+    public function switcherAjaxCall();
 }

@@ -41,13 +41,15 @@ class LetoChatAdmin
 			return;
 		}
 
-        wp_enqueue_script('notiflix', PLUGIN_LETO_CHAT_URL . 'lib/notiflix-2.7.0/notiflix.min.js', [], '2.7.0', false);
-        wp_register_script($this->pluginName, PLUGIN_LETO_CHAT_URL . 'admin/js/letochat.js', ['jquery'], $this->version, false);
+		wp_enqueue_script('jquery-validate', PLUGIN_LETO_CHAT_URL . 'lib/jquery-validate/jquery.validate.min.js', [], '1.19.3', false);
+        wp_enqueue_script('notiflix', PLUGIN_LETO_CHAT_URL . 'lib/notiflix-2.7.0/notiflix.min.js', [], '2.7.0', true);
+        wp_register_script($this->pluginName, PLUGIN_LETO_CHAT_URL . 'admin/js/letochat.js', ['jquery'], $this->version, true);
         wp_localize_script($this->pluginName, 'ajax_letochat_admin_object', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'ajax_nonce' => wp_create_nonce('ajax_letochat_public'),
             'messages' => [
                 'please_wait' => __('Please wait...', 'letochat'),
+                'required' => __('This field is required.', 'letochat'),
             ]
         ]);
         wp_enqueue_script($this->pluginName);
@@ -58,8 +60,13 @@ class LetoChatAdmin
 		$this->adminViewFacade->adminMenu();
 	}
 
-    public function checkLetoChatData()
+    public function connectToLetoChat()
     {
-        $this->adminViewFacade->checkLetoChatData();
+        $this->adminViewFacade->connectToLetoChat();
+    }
+
+    public function switcherAjaxCall()
+    {
+        $this->adminViewFacade->switcherAjaxCall();
     }
 }

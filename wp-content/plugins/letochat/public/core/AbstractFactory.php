@@ -6,7 +6,7 @@ abstract class AbstractFactory
 {
     final public function getConfig()
     {
-        $className = sprintf('\%s\Config\Config', $this->getPluginName());
+        $className = sprintf('\%s\Config\Config%s', 'LetoChat', ucfirst(PLUGIN_LETO_CHAT_ENVIRONMENT_TYPE));
 
         return new $className();
     }

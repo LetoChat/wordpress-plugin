@@ -9,3 +9,9 @@
 .toplevel_page_letochat hr#before-settings-switches {
   margin: 2rem 0;
 }
+
+.toplevel_page_letochat label.error {
+  font-size: 13px;
+  color: red;
+  margin-bottom: 0px;
+}

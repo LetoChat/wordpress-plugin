@@ -58,7 +58,8 @@ class LetoChat
 		$this->loader->add_action('admin_enqueue_scripts', $this->adminView, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $this->adminView, 'enqueue_scripts');
 		$this->loader->add_action('admin_menu', $this->adminView, 'adminMenu');
-		$this->loader->add_action('wp_ajax_letochat_check_data', $this->adminView, 'checkLetoChatData');
+		$this->loader->add_action('wp_ajax_letochat_check_data', $this->adminView, 'connectToLetoChat');
+		$this->loader->add_action('wp_ajax_letochat_switcher', $this->adminView, 'switcherAjaxCall');
 	}
 
 	private function definePublicHooks()

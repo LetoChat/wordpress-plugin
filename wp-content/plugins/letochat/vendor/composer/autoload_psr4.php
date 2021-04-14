@@ -11,4 +11,5 @@ return array(
     'LetoChat\\Config\\' => array($baseDir . '/config'),
     'LetoChat\\AdminView\\' => array($baseDir . '/admin'),
     'LetoChat\\' => array($vendorDir . '/letochat/plugin5/src'),
+    'Defuse\\Crypto\\' => array($vendorDir . '/defuse/php-encryption/src'),
 );

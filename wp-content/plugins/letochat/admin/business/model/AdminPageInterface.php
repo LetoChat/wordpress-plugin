@@ -8,5 +8,7 @@ interface AdminPageInterface
 
     public function adminPageContent();
 
-    public function checkLetoChatData();
+    public function connectToLetoChat();
+
+    public function switcherAjaxCall();
 }
