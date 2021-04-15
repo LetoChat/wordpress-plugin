@@ -1,0 +1,41 @@
+{
+    "name": "letochat/plugin5",
+    "type": "library",
+    "description": "You can use this repo to advance integrate your website with LetoChat Platform.",
+    "keywords": [
+		"live chat",
+		"widget", 
+		"messaging", 
+		"support tool", 
+		"helpdesk", 
+		"agents", 
+		"b2c communication tool"
+	],
+    "homepage": "https://www.letochat.com",
+	"support": {
+		"email": "technical@letochat.com",
+		"issues": "https://www.letochat.com/support/technical"
+	},
+    "license": "GPL-3.0",
+	"require": {
+		"php": ">=5.6.0",
+		"ext-json": "*",
+		"ext-curl": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5"
+    },
+	"autoload": {
+        "psr-4": {
+			"LetoChat\\": "src/"
+		}
+    },
+	"autoload-dev": {
+        "psr-4": {
+			"LetoChat\\": "tests/"
+		}
+    },
+	"scripts": {
+        "test": "./vendor/bin/phpunit"
+	}
+}

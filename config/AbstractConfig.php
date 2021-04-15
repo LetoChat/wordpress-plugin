@@ -8,7 +8,9 @@ class AbstractConfig implements AbstractConfigInterface
 {
     public function getLetoChatEncryptKey()
     {
-        return Key::loadFromAsciiSafeString(PLUGIN_LETO_CHAT_KEY_STRING);
+        $key = get_option(PLUGIN_LETO_CHAT_SETTINGS_OPTIONS['enc_key'], false);
+
+        return Key::loadFromAsciiSafeString($key);
     }
 
     public function getSettingsOptions()
