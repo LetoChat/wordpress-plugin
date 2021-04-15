@@ -27,7 +27,7 @@
     let channelSecret = $('#channel-secret').val();
     let authSecret = $('#auth-secret').val();
 
-    if (channelId !== '' && channelSecret !== '' && authSecret !== '') {
+    if (channelId !== '' && channelSecret !== '' && authSecret !== '' && ajax_letochat_admin_object.env_type !== 'local') {
         connectToLetoChatAjax();
     }
 

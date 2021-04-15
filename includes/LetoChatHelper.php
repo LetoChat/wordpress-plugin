@@ -49,4 +49,29 @@ trait LetoChatHelper
             }
         }
     }
+
+    public function woocommerceIsActivated()
+    {
+        $activated = false;
+
+        if (!function_exists( 'is_plugin_active_for_network')) {
+            require_once(ABSPATH . '/wp-admin/includes/plugin.php');
+        }
+
+        // multisite
+        if (is_multisite()) {
+            // this plugin is network activated - Woo must be network activated
+            if (is_plugin_active_for_network(plugin_basename(__FILE__))) {
+                $activated = is_plugin_active_for_network('woocommerce/woocommerce.php') ? true : false;
+                // this plugin is locally activated - Woo can be network or locally activated
+            } else {
+                $activated = is_plugin_active('woocommerce/woocommerce.php') ? true : false;
+            }
+            // this plugin runs on a single site
+        } else {
+            $activated = is_plugin_active('woocommerce/woocommerce.php') ? true : false;
+        }
+
+        return $activated;
+    }
 }

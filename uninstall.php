@@ -12,6 +12,7 @@ $settingsOptions = [
     'auth_secret' => 'letochat_auth_secret',
     'enable_widget' => 'letochat_enable_widget',
     'visible_for_admins' => 'letochat_visible_for_admins',
+    'enc_key' => 'letochat_enc_key',
 ];
 
 foreach ($settingsOptions as $settingOption) {

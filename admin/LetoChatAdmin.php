@@ -47,6 +47,7 @@ class LetoChatAdmin
         wp_localize_script($this->pluginName, 'ajax_letochat_admin_object', [
             'ajax_url' => admin_url('admin-ajax.php'),
             'ajax_nonce' => wp_create_nonce('ajax_letochat_public'),
+            'env_type' => PLUGIN_LETO_CHAT_ENVIRONMENT_TYPE,
             'messages' => [
                 'please_wait' => __('Please wait...', 'letochat'),
                 'required' => __('This field is required.', 'letochat'),

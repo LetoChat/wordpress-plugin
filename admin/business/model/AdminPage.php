@@ -2,6 +2,7 @@
 
 namespace LetoChat\AdminView\Business\Model;
 
+use LetoChat\Includes\BaseApi;
 use LetoChat\Includes\LetoChatHelper;
 use \LetoChat\Connector;
 
@@ -66,7 +67,12 @@ class AdminPage implements AdminPageInterface
         $channelSecret = wp_kses($_POST['channel_secret'], []);
         $authSecret = wp_kses($_POST['auth_secret'], []);
 
-        $connector = new Connector($channelID, $channelSecret, $authSecret, []);
+        $connector = new Connector($channelID, $channelSecret, $authSecret, [
+            'get-order' => sprintf('%s/wp-json/%s/%s', home_url(), BaseApi::getApiNamespace(), BaseApi::getApiOrderRoute(), '{order_id}'),
+            'get-orders' => sprintf('%s/wp-json/%s/%s/all', home_url(), BaseApi::getApiNamespace(), BaseApi::getApiOrderRoute(), '{user_id}'),
+            'get-user-cart' => '',
+            'get-users-cart' => '',
+        ]);
 
 //        if ($connector->check() === false) {
 //            $this->pluginResponse->isSuccess = false;

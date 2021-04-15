@@ -37,4 +37,9 @@ class LetoChatPublic
     {
         $this->publicViewFacade->addScript();
     }
+
+    public function registerApiRoutes()
+    {
+        $this->publicViewFacade->registerApiRoutes();
+    }
 }

@@ -2,10 +2,13 @@
 
 namespace LetoChat\PublicView\Business;
 
+use LetoChat\Includes\LetoChatHelper;
 use LetoChat\PublicView\Core\AbstractFacade;
 
 class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
 {
+    use LetoChatHelper;
+
     protected static $instance = null;
 
     public static function getInstance()
@@ -20,5 +23,12 @@ class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
     public function addScript()
     {
         $this->getFactory()->createWidget()->addScript();
+    }
+
+    public function registerApiRoutes()
+    {
+        if ($this->woocommerceIsActivated() === true) {
+            $this->getFactory()->createOrderApi()->registerRoutes();
+        }
     }
 }
