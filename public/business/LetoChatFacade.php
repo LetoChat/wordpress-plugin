@@ -29,6 +29,7 @@ class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
     {
         if ($this->woocommerceIsActivated() === true) {
             $this->getFactory()->createOrderApi()->registerRoutes();
+            $this->getFactory()->createUserCartApi()->registerRoutes();
         }
     }
 }

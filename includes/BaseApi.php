@@ -2,7 +2,7 @@
 
 namespace LetoChat\Includes;
 
-class BaseApi
+final class BaseApi
 {
     public static function getApiNamespace()
     {

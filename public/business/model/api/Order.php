@@ -114,6 +114,17 @@ class Order extends WC_REST_Orders_V1_Controller implements OrderInterface
         }
 
         $userId = wp_kses($request->get_param('user_id'), []);
+
+        if (get_user_by('ID', $userId) === false) {
+            return new WP_Error(
+                'letochat_rest_invalid_user_id',
+                __('Invalid user ID.', 'letochat'),
+                [
+                    'status' => 404,
+                ]
+            );
+        }
+
         $orders = [];
         $ordersId = wc_get_orders(array(
             'customer_id' => $userId,
