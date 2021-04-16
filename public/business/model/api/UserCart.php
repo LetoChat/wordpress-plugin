@@ -90,7 +90,7 @@ class UserCart extends BaseApi implements UserCartInterface
         $userId = wp_kses($request->get_param('user_id'), []);
         $woocommerceSessions = $this->repository->getUsersIdFromWoocommerceSessions();
 
-        if (in_array($userId, $woocommerceSessions) === false) {
+        if (empty($userId) || in_array($userId, $woocommerceSessions) === false) {
             return new WP_Error(
                 404,
                 __('Invalid user ID.', 'letochat'),
@@ -134,6 +134,13 @@ class UserCart extends BaseApi implements UserCartInterface
         }
 
         $usersIds = wp_kses($request->get_param('ids'), []);
+
+        if (empty($usersIds)) {
+            return new WP_Error(
+                404,
+                __('Invalid user ID.', 'letochat'),
+            );
+        }
 
         $usersIdsArray = explode(',', $usersIds);
 

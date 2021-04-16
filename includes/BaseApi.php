@@ -10,11 +10,11 @@ abstract class BaseApi extends WC_REST_Posts_Controller
 {
     use LetoChatHelper;
 
-    public const API_NAMESPACE = 'letochat/v1';
+    protected const API_NAMESPACE = 'letochat/v1';
 
-    public const API_ORDER_ROUTE = 'order';
+    protected const API_ORDER_ROUTE = 'order';
 
-    public const API_USER_CART_ROUTE = 'user-cart';
+    protected const API_USER_CART_ROUTE = 'user-cart';
 
     /**
      * @param $request

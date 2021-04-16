@@ -123,7 +123,7 @@ class Order extends BaseApi implements OrderInterface
 
         $userId = wp_kses($request->get_param('user_id'), []);
 
-        if (get_user_by('ID', $userId) === false) {
+        if (empty($userId) || get_user_by('ID', $userId) === false) {
             return new WP_Error(
                 404,
                 __('Invalid user ID.', 'letochat')
