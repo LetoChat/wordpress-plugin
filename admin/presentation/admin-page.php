@@ -5,44 +5,44 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-md-5">
-                            <img style="max-height: 60px;" src="<?= PLUGIN_LETO_CHAT_URL ?>images/logo.gif" class="img-fluid" alt=""/>
+                            <img style="max-height: 60px;" src="<?php echo PLUGIN_LETO_CHAT_URL ?>images/logo.gif" class="img-fluid" alt=""/>
                         </div>
                         <div class="col-md-7 text-right">
-                            <h6><?= __('Do you encounter difficulties?', 'letochat'); ?> <a href=""><?= __('We can help you', 'letochat'); ?></a></h6>
+                            <h6><?php echo __('Do you encounter difficulties?', 'letochat'); ?> <a href=""><?php echo __('We can help you', 'letochat'); ?></a></h6>
                         </div>
                     </div>
                     <hr/>
                     <div class="row">
                         <div class="col-md-12">
-                            <div id="status" class="alert <?= empty($view['is_connected']) ? 'alert-warning' : ''; ?>" <?= empty($view['is_connected']) ? '' : 'style="display: none;"'; ?> role="alert">
-                                <?= empty($view['is_connected']) ? __('To make the chat functional, please fill in the fields below!', 'letochat') : ''; ?>
+                            <div id="status" class="alert <?php echo empty($view['is_connected']) ? 'alert-warning' : ''; ?>" <?php echo empty($view['is_connected']) ? '' : 'style="display: none;"'; ?> role="alert">
+                                <?php echo empty($view['is_connected']) ? __('To make the chat functional, please fill in the fields below!', 'letochat') : ''; ?>
                             </div>
                             <form id="leto-chat-data-form" method="POST" novalidate="novalidate">
                                 <div class="form-group row align-items-center">
-                                    <label for="channel-id" class="col-sm-3 col-form-label"><?= __('Channel ID', 'letochat'); ?></label>
+                                    <label for="channel-id" class="col-sm-3 col-form-label"><?php echo __('Channel ID', 'letochat'); ?></label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="channel-id" name="channel_id" placeholder="Please insert channel ID" value="<?= $view['channel_id']; ?>" required>
+                                        <input type="text" class="form-control" id="channel-id" name="channel_id" placeholder="Please insert channel ID" value="<?php echo $view['channel_id']; ?>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row align-items-center">
-                                    <label for="channel-secret" class="col-sm-3 col-form-label"><?= __('Channel Secret', 'letochat'); ?></label>
+                                    <label for="channel-secret" class="col-sm-3 col-form-label"><?php echo __('Channel Secret', 'letochat'); ?></label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="channel-secret" name="channel_secret" placeholder="Please insert channel secret" value="<?= $view['channel_secret']; ?>" required>
+                                        <input type="text" class="form-control" id="channel-secret" name="channel_secret" placeholder="Please insert channel secret" value="<?php echo $view['channel_secret']; ?>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row align-items-center">
-                                    <label for="auth-secret" class="col-sm-3 col-form-label"><?= __('Auth Secret', 'letochat'); ?></label>
+                                    <label for="auth-secret" class="col-sm-3 col-form-label"><?php echo __('Auth Secret', 'letochat'); ?></label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="auth-secret" name="auth_secret" placeholder="Please insert authentication secret" value="<?= $view['auth_secret']; ?>" required>
+                                        <input type="text" class="form-control" id="auth-secret" name="auth_secret" placeholder="Please insert authentication secret" value="<?php echo $view['auth_secret']; ?>" required>
                                     </div>
                                 </div>
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-5 text-right">
-                                        <button type="button" id="paste-data" class="btn btn-info w-50" style="display: none;"><?= __('Paste data', 'letochat'); ?></button>
+                                        <button type="button" id="paste-data" class="btn btn-info w-50" style="display: none;"><?php echo __('Paste data', 'letochat'); ?></button>
                                     </div>
                                     <div class="col-md-7">
-                                        <button type="submit" id="save-leto-chat-data" class="btn btn-success mr-2 w-100"><span class="dashicons dashicons-yes"></span> <?= __('Save & Check', 'letochat'); ?></button>
+                                        <button type="submit" id="save-leto-chat-data" class="btn btn-success mr-2 w-100"><span class="dashicons dashicons-yes"></span> <?php echo __('Save & Check', 'letochat'); ?></button>
                                     </div>
                                 </div>
                             </form>
@@ -55,11 +55,11 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <span class="label"><?= __('Enable Widget', 'letochat'); ?></span>
+                                        <span class="label"><?php echo __('Enable Widget', 'letochat'); ?></span>
                                     </td>
                                     <td>
                                         <label class="toggle-switchy" for="enable-widget" data-size="lg">
-                                            <input <?= $view['enable_widget'] === 'on' ? 'checked' : ''; ?> type="checkbox" id="enable-widget" name="enable_widget" value="true">
+                                            <input <?php echo $view['enable_widget'] === 'on' ? 'checked' : ''; ?> type="checkbox" id="enable-widget" name="enable_widget" value="true">
                                             <span class="toggle">
                                                 <span class="switch"></span>
                                             </span>
@@ -67,10 +67,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><?= __('Visible for admins', 'letochat'); ?></td>
+                                    <td><?php echo __('Visible for admins', 'letochat'); ?></td>
                                     <td>
                                         <label class="toggle-switchy" for="visible-for-admins" data-size="lg">
-                                            <input <?= $view['visible_for_admins'] === 'on' ? 'checked' : ''; ?> type="checkbox" id="visible-for-admins" name="visible_for_admins" value="true">
+                                            <input <?php echo $view['visible_for_admins'] === 'on' ? 'checked' : ''; ?> type="checkbox" id="visible-for-admins" name="visible_for_admins" value="true">
                                             <span class="toggle">
                                                 <span class="switch"></span>
                                             </span>

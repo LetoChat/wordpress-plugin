@@ -2,7 +2,10 @@
 
 namespace LetoChat\PublicView\Business\Model\Api;
 
+use LetoChat\Config\AbstractConfigInterface;
 use LetoChat\Includes\BaseApi;
+use LetoChat\Includes\LetoChatHelper;
+use LetoChat\PublicView\Persistence\LetoChatRepositoryInterface;
 use \WC_REST_Posts_Controller;
 use \WP_REST_Server;
 use \WP_Error;
@@ -11,8 +14,21 @@ use \WC_Session_Handler;
 
 class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
 {
-    public function __construct()
+    use LetoChatHelper;
+
+    private $config;
+
+    private $repository;
+
+    /**
+     * UserCart constructor.
+     * @param AbstractConfigInterface $config
+     * @param LetoChatRepositoryInterface $repository
+     */
+    public function __construct($config, $repository)
     {
+        $this->config = $config;
+        $this->repository = $repository;
         $this->namespace = BaseApi::getApiNamespace();
         $this->rest_base = BaseApi::getApiUserCartRoute();
     }
@@ -44,107 +60,193 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
         );
     }
 
+    /**
+     * @param $request
+     * @return bool|WP_Error
+     */
     public function getUserCartPermissionsCheck($request)
     {
-        // IN PROGRESS
-        return true;
+        return $this->permissionCheck($request);
     }
 
+    /**
+     * @param $request
+     * @return WP_Error|WP_HTTP_Response
+     */
     public function getUserCart($request)
     {
         if ($request->get_param('user_id') === null) {
             return new WP_Error(
-                'letochat_rest_bad_request',
-                __('Bad Request.', 'leto-chat-affiliate'),
-                [
-                    'status' => 400,
-                ]
+                400,
+                __('Bad Request.', 'letochat')
             );
         }
 
         $userId = wp_kses($request->get_param('user_id'), []);
+        $woocommerceSessions = $this->repository->getUsersIdFromWoocommerceSessions();
 
-        if (get_user_by('ID', $userId) === false) {
+        if (in_array($userId, $woocommerceSessions) === false) {
             return new WP_Error(
-                'letochat_rest_invalid_user_id',
+                404,
                 __('Invalid user ID.', 'letochat'),
-                [
-                    'status' => 404,
-                ]
             );
         }
 
-        $userCartData = $this->userCartData($userId);
+        $userCartData = $this->getCartItemsByUserId($userId);
 
         if ($userCartData === false) {
             return new WP_Error(
-                'letochat_rest_no_cart',
-                __('No cart founds.', 'letochat'),
-                [
-                    'status' => 404,
-                ]
+                404,
+                __('No cart founds.', 'letochat')
             );
         }
 
         return new WP_HTTP_Response([
-            'code' => 'letochat_rest_user_cart',
-            'data' => [
-                'user_id' => $userId,
-                'carts' => $userCartData,
-                'status' => 200,
-            ]
+            'data' => $userCartData,
         ], 200);
     }
 
+    /**
+     * @param $request
+     * @return bool|WP_Error
+     */
     public function getUsersCartPermissionsCheck($request)
     {
-        // IN PROGRESS
-        return true;
+        return $this->permissionCheck($request);
     }
 
+    /**
+     * @param $request
+     * @return WP_Error|WP_HTTP_Response
+     */
     public function getUsersCart($request)
     {
-        if ($request->get_param('users_ids') === null) {
+        if ($request->get_param('ids') === null) {
             return new WP_Error(
-                'letochat_rest_bad_request',
-                __('Bad Request.', 'leto-chat-affiliate'),
-                [
-                    'status' => 400,
-                ]
+                400,
+                __('Bad Request.', 'letochat')
             );
         }
 
-        $usersIds = wp_kses($request->get_param('users_ids'), []);
+        $usersIds = wp_kses($request->get_param('ids'), []);
 
         $usersIdsArray = explode(',', $usersIds);
 
         $usersCarts = [];
 
         if (is_array($usersIdsArray) === true) {
+            $woocommerceSessions = $this->repository->getUsersIdFromWoocommerceSessions();
+
             foreach ($usersIdsArray as $userId) {
-                if (get_user_by('ID', $userId) === false) {
+                if (in_array($userId, $woocommerceSessions) === false) {
                     continue;
                 }
 
-                $usersCarts[] = [
-                    'user_id' => $userId,
-                    'cart' => $this->userCartData($userId),
-                ];
+                $usersCarts[] = $this->getUserCartDataByUserId($userId);
             }
         } else {
-            $usersCarts = $this->userCartData($usersIds);
+            $usersCarts = $this->getUserCartDataByUserId($usersIds);
         }
 
         return new WP_HTTP_Response([
-            'code' => 'letochat_rest_user_cart',
-            'data' => [
-                'carts' => $usersCarts,
-                'status' => 200,
-            ]
+            'data' => $usersCarts
         ], 200);
     }
 
-    private function userCartData($userId)
+    /**
+     * @param $request
+     * @return bool|WP_Error
+     */
+    private function permissionCheck($request)
+    {
+        if ($request->get_param('auth_secret') === null) {
+            return new WP_Error(
+                400,
+                __('Bad Request.', 'letochat')
+            );
+        }
+
+        $appAuthSecret = $request->get_param('auth_secret');
+
+        $settingsOptions = $this->config->getSettingsOptions();
+
+        $authSecret = $this->get_option($settingsOptions['auth_secret'], $this->config->getLetoChatEncryptKey());
+
+        if ($appAuthSecret !== $authSecret) {
+            return new WP_Error(
+                401,
+                __('Unauthorized.', 'letochat')
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $userId
+     * @return array
+     */
+    private function getCartItemsByUserId($userId)
+    {
+        $cartItems = $this->cartItemsByUserId($userId);
+
+        $items = [];
+
+        if ($cartItems === false) {
+            return $items;
+        }
+
+        foreach ($cartItems as $cartItemKey => $cartItem) {
+            $item = new \stdClass();
+
+            $item->name = get_the_title($cartItem['product_id']);
+            $item->quantity = $cartItem['quantity'];
+            $item->total = $cartItem['line_total'];
+
+            $productImageUrl = wp_get_attachment_image_src(get_post_thumbnail_id($cartItem['product_id']), 'single-post-thumbnail');
+
+            if ($productImageUrl !== false) {
+                $item->image = $productImageUrl[0];
+            }
+            $item->link = get_permalink($cartItem['product_id']);
+
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param string $userId
+     * @return \stdClass
+     */
+    private function getUserCartDataByUserId($userId)
+    {
+        $cartItems = $this->cartItemsByUserId($userId);
+
+        if ($cartItems === false) {
+            return new \stdClass();
+        }
+
+        $total = 0;
+        $cart = new \stdClass();
+        $cart->user_id = $userId;
+        $cart->currency = get_woocommerce_currency();
+
+        foreach ($cartItems as $cartItemKey => $cartItem) {
+            $total = $total + $cartItem['line_total'];
+        }
+
+        $cart->total = $total;
+
+        return $cart;
+    }
+
+    /**
+     * @param string $userId
+     * @return false|mixed|string
+     */
+    private function cartItemsByUserId($userId)
     {
         // Get an instance of the WC_Session_Handler Object
         $sessionHandler = new WC_Session_Handler();
@@ -157,24 +259,6 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
         }
 
         // Get cart items array
-        $cartItems = maybe_unserialize($session['cart']);
-
-        $items = [];
-
-        foreach ($cartItems as $cartItemKey => $cartItem) {
-            $items[] = [
-              'product_id' => $cartItem['product_id'],
-              'variation_id' => $cartItem['variation_id'],
-              'quantity' => $cartItem['quantity'],
-              'attributes' => $cartItem['variation'],
-              'item_taxes' => $cartItem['line_tax_data'],
-              'subtotal_tax' => $cartItem['line_subtotal_tax'],
-              'total_tax' => $cartItem['line_tax'],
-              'subtotal' => $cartItem['line_subtotal'],
-              'total' => $cartItem['line_total'],
-            ];
-        }
-
-        return $items;
+        return maybe_unserialize($session['cart']);
     }
 }

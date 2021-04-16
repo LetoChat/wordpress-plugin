@@ -11,6 +11,20 @@ abstract class AbstractFactory
         return new $className();
     }
 
+    final public function getEntityManager()
+    {
+        $className = sprintf('\%s\AdminView\Persistence\%sEntityManager', 'LetoChat', 'LetoChat');
+
+        return new $className();
+    }
+
+    final public function getRepository()
+    {
+        $className = sprintf('\%s\AdminView\Persistence\%sRepository', 'LetoChat', 'LetoChat');
+
+        return new $className();
+    }
+
     private function getPluginName()
     {
         $parts = explode('/', PLUGIN_LETO_CHAT_SLUG);

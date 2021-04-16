@@ -5,6 +5,8 @@ namespace LetoChat\PublicView\Business\Model;
 use LetoChat\Config\AbstractConfigInterface;
 use LetoChat\Includes\LetoChatHelper;
 use \LetoChat\Widget as GenericLetoChatWidget;
+use \WC_Session_Handler;
+use \WC_Customer;
 
 class Widget implements WidgetInterface
 {
@@ -38,21 +40,43 @@ class Widget implements WidgetInterface
 
         $chat = new GenericLetoChatWidget($channelId, $channelSecret);
 
+        $infoValues = [];
+
+        if ($this->woocommerceIsActivated() === true) {
+            $infoValues['logged'] = false;
+
+            if (is_user_logged_in() === true) {
+                $infoValues['logged'] = true;
+
+                $currentUserId = get_current_user_id();
+                $currentUserData = new WC_Customer($currentUserId);
+
+                $infoValues['name'] = sprintf('%s %s', $currentUserData->get_first_name(), $currentUserData->get_last_name());
+                $infoValues['avatar'] = $currentUserData->get_avatar_url();
+                $infoValues['email'] = $currentUserData->get_billing_email();
+                $infoValues['phone'] = $currentUserData->get_billing_phone();
+                $infoValues['company_name'] = $currentUserData->get_billing_company();
+            }
+
+            if ($this->getUserId() !== 0) {
+                $infoValues['id'] = $this->getUserId();
+            }
+        }
+
         try {
-            $chat->infoValues([
-                'name' => 'Ion Popescu',
-                'email' => 'ion.popescu@gmail.com',
-            ])->customValues([
-                'Client type' => 'Silver',
-                'Client code' => '0456785',
-            ]);
+            $chat->infoValues($infoValues);
 
             echo $chat->build();
         } catch (\Exception $e) {
+            echo $e->getMessage();
             echo '';
         }
     }
 
+    /**
+     * @param $isVisible
+     * @return bool
+     */
     private function hideForAdmins($isVisible)
     {
         if (is_user_logged_in() === true) {
@@ -66,5 +90,24 @@ class Widget implements WidgetInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    private function getUserId()
+    {
+        if (is_user_logged_in() === true) {
+            return get_current_user_id();
+        }
+
+        $wcSessionHandler = new WC_Session_Handler();
+        $guestSession = $wcSessionHandler->get_session_cookie();
+
+        if ($guestSession === false) {
+            return 0;
+        }
+
+        return $guestSession[0];
     }
 }

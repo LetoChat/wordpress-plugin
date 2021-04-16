@@ -27,6 +27,6 @@ class LetoChatBusinessFactory extends AbstractFactory
 
     public function createUserCartApi()
     {
-        return new UserCart();
+        return new UserCart($this->getConfig(), $this->getRepository());
     }
 }
