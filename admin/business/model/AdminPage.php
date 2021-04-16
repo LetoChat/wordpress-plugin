@@ -68,10 +68,10 @@ class AdminPage implements AdminPageInterface
         $authSecret = wp_kses($_POST['auth_secret'], []);
 
         $connector = new Connector($channelID, $channelSecret, $authSecret, [
-            'get-order' => sprintf('%s/wp-json/%s/%s', home_url(), BaseApi::getApiNamespace(), BaseApi::getApiOrderRoute()),
-            'get-orders' => sprintf('%s/wp-json/%s/%s/all', home_url(), BaseApi::getApiNamespace(), BaseApi::getApiOrderRoute()),
-            'get-user-cart' => '',
-            'get-users-cart' => '',
+            'get-order' => sprintf('%s/wp-json/%s/%s', home_url(), BaseApi::API_NAMESPACE, BaseApi::API_ORDER_ROUTE),
+            'get-orders' => sprintf('%s/wp-json/%s/%s/all', home_url(), BaseApi::API_NAMESPACE, BaseApi::API_ORDER_ROUTE),
+            'get-user-cart' => sprintf('%s/wp-json/%s/%s', home_url(), BaseApi::API_NAMESPACE, BaseApi::API_USER_CART_ROUTE),
+            'get-users-cart' => sprintf('%s/wp-json/%s/%s/all', home_url(), BaseApi::API_NAMESPACE, BaseApi::API_USER_CART_ROUTE),
         ]);
 
 //        if ($connector->check() === false) {
