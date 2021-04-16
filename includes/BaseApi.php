@@ -2,20 +2,47 @@
 
 namespace LetoChat\Includes;
 
-final class BaseApi
+use LetoChat\Config\AbstractConfigInterface;
+use \WC_REST_Posts_Controller;
+use \WP_Error;
+
+abstract class BaseApi extends WC_REST_Posts_Controller
 {
-    public static function getApiNamespace()
-    {
-        return 'letochat/v1';
-    }
+    use LetoChatHelper;
 
-    public static function getApiOrderRoute()
-    {
-        return 'order';
-    }
+    public const API_NAMESPACE = 'letochat/v1';
 
-    public static function getApiUserCartRoute()
+    public const API_ORDER_ROUTE = 'order';
+
+    public const API_USER_CART_ROUTE = 'user-cart';
+
+    /**
+     * @param $request
+     * @param AbstractConfigInterface $config
+     * @return bool|WP_Error
+     */
+    protected function permissionCheck($request, $config)
     {
-        return 'user-cart';
+        if ($request->get_param('auth_secret') === null) {
+            return new WP_Error(
+                400,
+                __('Bad Request.', 'letochat')
+            );
+        }
+
+        $appAuthSecret = $request->get_param('auth_secret');
+
+        $settingsOptions = $config->getSettingsOptions();
+
+        $authSecret = $this->get_option($settingsOptions['auth_secret'], $config->getLetoChatEncryptKey());
+
+        if ($appAuthSecret !== $authSecret) {
+            return new WP_Error(
+                401,
+                __('Unauthorized.', 'letochat')
+            );
+        }
+
+        return true;
     }
 }

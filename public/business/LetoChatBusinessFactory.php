@@ -22,7 +22,7 @@ class LetoChatBusinessFactory extends AbstractFactory
 
     public function createOrderApi()
     {
-        return new Order($this->createPluginResponse());
+        return new Order($this->getConfig());
     }
 
     public function createUserCartApi()

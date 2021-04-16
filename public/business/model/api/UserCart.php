@@ -6,18 +6,23 @@ use LetoChat\Config\AbstractConfigInterface;
 use LetoChat\Includes\BaseApi;
 use LetoChat\Includes\LetoChatHelper;
 use LetoChat\PublicView\Persistence\LetoChatRepositoryInterface;
-use \WC_REST_Posts_Controller;
 use \WP_REST_Server;
 use \WP_Error;
 use \WP_HTTP_Response;
 use \WC_Session_Handler;
 
-class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
+class UserCart extends BaseApi implements UserCartInterface
 {
     use LetoChatHelper;
 
+    /**
+     * @var AbstractConfigInterface
+     */
     private $config;
 
+    /**
+     * @var LetoChatRepositoryInterface
+     */
     private $repository;
 
     /**
@@ -29,8 +34,8 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
     {
         $this->config = $config;
         $this->repository = $repository;
-        $this->namespace = BaseApi::getApiNamespace();
-        $this->rest_base = BaseApi::getApiUserCartRoute();
+        $this->namespace = self::API_NAMESPACE;
+        $this->rest_base = self::API_USER_CART_ROUTE;
     }
 
     public function registerRoutes()
@@ -66,7 +71,7 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
      */
     public function getUserCartPermissionsCheck($request)
     {
-        return $this->permissionCheck($request);
+        return $this->permissionCheck($request, $this->config);
     }
 
     /**
@@ -112,7 +117,7 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
      */
     public function getUsersCartPermissionsCheck($request)
     {
-        return $this->permissionCheck($request);
+        return $this->permissionCheck($request, $this->config);
     }
 
     /**
@@ -151,35 +156,6 @@ class UserCart extends WC_REST_Posts_Controller implements UserCartInterface
         return new WP_HTTP_Response([
             'data' => $usersCarts
         ], 200);
-    }
-
-    /**
-     * @param $request
-     * @return bool|WP_Error
-     */
-    private function permissionCheck($request)
-    {
-        if ($request->get_param('auth_secret') === null) {
-            return new WP_Error(
-                400,
-                __('Bad Request.', 'letochat')
-            );
-        }
-
-        $appAuthSecret = $request->get_param('auth_secret');
-
-        $settingsOptions = $this->config->getSettingsOptions();
-
-        $authSecret = $this->get_option($settingsOptions['auth_secret'], $this->config->getLetoChatEncryptKey());
-
-        if ($appAuthSecret !== $authSecret) {
-            return new WP_Error(
-                401,
-                __('Unauthorized.', 'letochat')
-            );
-        }
-
-        return true;
     }
 
     /**
