@@ -86,7 +86,8 @@ class Widget implements WidgetInterface
         $product = wc_get_product($product_id);
         $productName = $product->get_name();
         $productPrice = $product->get_price();
-        $productImage = $product->get_image();
+        $productImageId = $product->get_image_id();
+        $productImage = wp_get_attachment_url($productImageId);
 
         $productData = [
             'id' => $product_id,
@@ -107,13 +108,27 @@ class Widget implements WidgetInterface
             $productData['price'] = $productPrice;
         }
 
-        add_action('letochat-script', function() use ($infoValues, $productData) {
+        add_action('wp_footer', function() use ($infoValues, $productData) {
+            $settingsOptions = $this->config->getSettingsOptions();
+
+            $isEnabled = get_option($settingsOptions['enable_widget']);
+
+            if ($isEnabled === 'off') {
+                return;
+            }
+
+            $isVisibleForAdmins = get_option($settingsOptions['visible_for_admins']);
+
+            if ($this->hideForAdmins($isVisibleForAdmins) === true) {
+                return;
+            }
+
             try {
                 $this->chat->infoValues($infoValues);
 
                 $this->chat->event('cart-add', $productData);
 
-                echo $this->chat->build();
+                echo 'a' . $this->chat->build();
             } catch (Exception $e) {
                 echo '';
             }
