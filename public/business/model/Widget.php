@@ -5,18 +5,34 @@ namespace LetoChat\PublicView\Business\Model;
 use LetoChat\Config\AbstractConfigInterface;
 use LetoChat\Includes\LetoChatHelper;
 use \LetoChat\Widget as GenericLetoChatWidget;
+use \Exception;
 use \WC_Session_Handler;
 use \WC_Customer;
+use \WC_Product;
 
 class Widget implements WidgetInterface
 {
     use LetoChatHelper;
 
+    /**
+     * @var AbstractConfigInterface
+     */
     private $config;
 
-    public function __construct(AbstractConfigInterface $config)
+    /**
+     * @var GenericLetoChatWidget
+     */
+    private $chat;
+
+    /**
+     * Widget constructor.
+     * @param AbstractConfigInterface $config
+     * @param GenericLetoChatWidget $chat
+     */
+    public function __construct($config, $chat)
     {
         $this->config = $config;
+        $this->chat = $chat;
     }
 
     public function addScript()
@@ -35,12 +51,11 @@ class Widget implements WidgetInterface
             return;
         }
 
-        $channelId = $this->get_option($settingsOptions['channel_id'], $this->config->getLetoChatEncryptKey());
-        $channelSecret = $this->get_option($settingsOptions['channel_secret'], $this->config->getLetoChatEncryptKey());
-
-        $chat = new GenericLetoChatWidget($channelId, $channelSecret);
-
         $infoValues = [];
+
+        if ($this->getUserId() !== 0) {
+            $infoValues['id'] = $this->getUserId();
+        }
 
         if ($this->woocommerceIsActivated() === true) {
             $infoValues['logged'] = false;
@@ -51,25 +66,85 @@ class Widget implements WidgetInterface
                 $currentUserId = get_current_user_id();
                 $currentUserData = new WC_Customer($currentUserId);
 
-                $infoValues['name'] = sprintf('%s %s', $currentUserData->get_first_name(), $currentUserData->get_last_name());
-                $infoValues['avatar'] = $currentUserData->get_avatar_url();
-                $infoValues['email'] = $currentUserData->get_billing_email();
-                $infoValues['phone'] = $currentUserData->get_billing_phone();
-                $infoValues['company_name'] = $currentUserData->get_billing_company();
-            }
+                $fullName = '';
 
-            if ($this->getUserId() !== 0) {
-                $infoValues['id'] = $this->getUserId();
+                if (!empty($currentUserData->get_first_name()) && !empty($currentUserData->get_last_name())) {
+                    $fullName = sprintf('%s %s', $currentUserData->get_first_name(), $currentUserData->get_last_name());
+                } elseif (!empty($currentUserData->get_first_name())) {
+                    $fullName = $currentUserData->get_first_name();
+                } elseif (!empty($currentUserData->get_last_name())) {
+                    $fullName = $currentUserData->get_last_name();
+                }
+
+                if (!empty($fullName)) {
+                    $infoValues['name'] = $fullName;
+                }
+
+                if (!empty($currentUserData->get_avatar_url())) {
+                    $infoValues['avatar'] = $currentUserData->get_avatar_url();
+                }
+
+                if (!empty($currentUserData->get_billing_email())) {
+                    $infoValues['email'] = $currentUserData->get_billing_email();
+                }
+
+                if (!empty($currentUserData->get_billing_phone())) {
+                    $infoValues['phone'] = $currentUserData->get_billing_phone();
+                }
+
+                if (!empty($currentUserData->get_billing_company())) {
+                    $infoValues['company_name'] = $currentUserData->get_billing_company();
+                }
             }
         }
 
         try {
-            $chat->infoValues($infoValues);
+            $this->chat->infoValues($infoValues);
 
-            echo $chat->build();
+            echo $this->chat->build();
         } catch (\Exception $e) {
             echo $e->getMessage();
             echo '';
+        }
+    }
+
+    public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
+    {
+        if ($this->chat === null) {
+            return;
+        }
+
+        /**
+         * @var WC_Product $product
+         */
+        $product = wc_get_product($product_id);
+        $productName = $product->get_name();
+        $productPrice = $product->get_price();
+        $productImage = $product->get_image();
+
+        $productData = [
+            'id' => $product_id,
+            'quantity' => $quantity,
+            'link' => $product->get_permalink(),
+            'currency' => get_woocommerce_currency(),
+        ];
+
+        if (!empty($productName)) {
+            $productData['name'] = $productName;
+        }
+
+        if (!empty($productImage)) {
+            $productData['image'] = $productImage;
+        }
+
+        if (!empty($productPrice)) {
+            $productData['price'] = $productPrice;
+        }
+
+        try {
+            $this->chat->event('cart-add', $productData);
+        } catch (Exception $e) {
+            return;
         }
     }
 

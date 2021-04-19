@@ -69,6 +69,7 @@ class LetoChat
 		$this->loader->add_action('wp_enqueue_scripts', $this->publicView, 'enqueue_scripts');
 		$this->loader->add_action('wp_footer', $this->publicView, 'addScript');
         $this->loader->add_action('rest_api_init', $this->publicView, 'registerApiRoutes');
+        $this->loader->add_action('woocommerce_add_to_cart', $this->publicView, 'addToCartEvent', 10, 6);
 	}
 
 	public function run()

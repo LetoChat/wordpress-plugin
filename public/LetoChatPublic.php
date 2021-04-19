@@ -38,6 +38,11 @@ class LetoChatPublic
         $this->publicViewFacade->addScript();
     }
 
+    public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
+    {
+        $this->publicViewFacade->addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data);
+    }
+
     public function registerApiRoutes()
     {
         $this->publicViewFacade->registerApiRoutes();
