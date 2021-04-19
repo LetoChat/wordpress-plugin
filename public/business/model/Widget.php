@@ -58,61 +58,27 @@ class Widget implements WidgetInterface
         }
 
         if ($this->woocommerceIsActivated() === true) {
-            $infoValues['logged'] = false;
-
-            if (is_user_logged_in() === true) {
-                $infoValues['logged'] = true;
-
-                $currentUserId = get_current_user_id();
-                $currentUserData = new WC_Customer($currentUserId);
-
-                $fullName = '';
-
-                if (!empty($currentUserData->get_first_name()) && !empty($currentUserData->get_last_name())) {
-                    $fullName = sprintf('%s %s', $currentUserData->get_first_name(), $currentUserData->get_last_name());
-                } elseif (!empty($currentUserData->get_first_name())) {
-                    $fullName = $currentUserData->get_first_name();
-                } elseif (!empty($currentUserData->get_last_name())) {
-                    $fullName = $currentUserData->get_last_name();
-                }
-
-                if (!empty($fullName)) {
-                    $infoValues['name'] = $fullName;
-                }
-
-                if (!empty($currentUserData->get_avatar_url())) {
-                    $infoValues['avatar'] = $currentUserData->get_avatar_url();
-                }
-
-                if (!empty($currentUserData->get_billing_email())) {
-                    $infoValues['email'] = $currentUserData->get_billing_email();
-                }
-
-                if (!empty($currentUserData->get_billing_phone())) {
-                    $infoValues['phone'] = $currentUserData->get_billing_phone();
-                }
-
-                if (!empty($currentUserData->get_billing_company())) {
-                    $infoValues['company_name'] = $currentUserData->get_billing_company();
-                }
-            }
+            $infoValues = $this->getInfoValues($infoValues);
         }
 
         try {
             $this->chat->infoValues($infoValues);
 
             echo $this->chat->build();
-        } catch (\Exception $e) {
-            echo $e->getMessage();
+        } catch (Exception $e) {
             echo '';
         }
     }
 
     public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
     {
-        if ($this->chat === null) {
-            return;
+        $infoValues = [];
+
+        if ($this->getUserId() !== 0) {
+            $infoValues['id'] = $this->getUserId();
         }
+
+        $infoValues = $this->getInfoValues($infoValues);
 
         /**
          * @var WC_Product $product
@@ -141,11 +107,17 @@ class Widget implements WidgetInterface
             $productData['price'] = $productPrice;
         }
 
-        try {
-            $this->chat->event('cart-add', $productData);
-        } catch (Exception $e) {
-            return;
-        }
+        add_action('letochat-script', function() use ($infoValues, $productData) {
+            try {
+                $this->chat->infoValues($infoValues);
+
+                $this->chat->event('cart-add', $productData);
+
+                echo $this->chat->build();
+            } catch (Exception $e) {
+                echo '';
+            }
+        });
     }
 
     /**
@@ -184,5 +156,49 @@ class Widget implements WidgetInterface
         }
 
         return $guestSession[0];
+    }
+
+    private function getInfoValues($infoValues)
+    {
+        $infoValues['logged'] = false;
+
+        if (is_user_logged_in() === true) {
+            $infoValues['logged'] = true;
+
+            $currentUserId = get_current_user_id();
+            $currentUserData = new WC_Customer($currentUserId);
+
+            $fullName = '';
+
+            if (!empty($currentUserData->get_first_name()) && !empty($currentUserData->get_last_name())) {
+                $fullName = sprintf('%s %s', $currentUserData->get_first_name(), $currentUserData->get_last_name());
+            } elseif (!empty($currentUserData->get_first_name())) {
+                $fullName = $currentUserData->get_first_name();
+            } elseif (!empty($currentUserData->get_last_name())) {
+                $fullName = $currentUserData->get_last_name();
+            }
+
+            if (!empty($fullName)) {
+                $infoValues['name'] = $fullName;
+            }
+
+            if (!empty($currentUserData->get_avatar_url())) {
+                $infoValues['avatar'] = $currentUserData->get_avatar_url();
+            }
+
+            if (!empty($currentUserData->get_billing_email())) {
+                $infoValues['email'] = $currentUserData->get_billing_email();
+            }
+
+            if (!empty($currentUserData->get_billing_phone())) {
+                $infoValues['phone'] = $currentUserData->get_billing_phone();
+            }
+
+            if (!empty($currentUserData->get_billing_company())) {
+                $infoValues['company_name'] = $currentUserData->get_billing_company();
+            }
+        }
+
+        return $infoValues;
     }
 }

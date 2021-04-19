@@ -27,7 +27,7 @@ class AdminPage implements AdminPageInterface
 			'manage_options',
 			'letochat',
 			[$this, 'adminPageContent'],
-            PLUGIN_LETO_CHAT_URL . '/images/menu-logo.png',
+            PLUGIN_LETO_CHAT_URL . 'images/menu-logo.png',
 			3
 		);
     }

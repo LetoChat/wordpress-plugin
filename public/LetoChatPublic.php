@@ -40,11 +40,18 @@ class LetoChatPublic
 
     public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
     {
+        remove_action('wp_footer', [$this, 'addScript']);
+
         $this->publicViewFacade->addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data);
     }
 
     public function registerApiRoutes()
     {
         $this->publicViewFacade->registerApiRoutes();
+    }
+
+    public function addLetoChatHookInFooter()
+    {
+        do_action('letochat-script');
     }
 }
