@@ -64,7 +64,7 @@ class Widget implements WidgetInterface
         try {
             $this->chat->infoValues($infoValues);
 
-            echo $this->chat->build();
+            echo '<div id="letochat-script">' . $this->chat->build() . '</div>';
         } catch (Exception $e) {
             echo '';
         }
@@ -80,33 +80,7 @@ class Widget implements WidgetInterface
 
         $infoValues = $this->getInfoValues($infoValues);
 
-        /**
-         * @var WC_Product $product
-         */
-        $product = wc_get_product($product_id);
-        $productName = $product->get_name();
-        $productPrice = $product->get_price();
-        $productImageId = $product->get_image_id();
-        $productImage = wp_get_attachment_url($productImageId);
-
-        $productData = [
-            'id' => $product_id,
-            'quantity' => $quantity,
-            'link' => $product->get_permalink(),
-            'currency' => get_woocommerce_currency(),
-        ];
-
-        if (!empty($productName)) {
-            $productData['name'] = $productName;
-        }
-
-        if (!empty($productImage)) {
-            $productData['image'] = $productImage;
-        }
-
-        if (!empty($productPrice)) {
-            $productData['price'] = $productPrice;
-        }
+        $productData = $this->getProductData($product_id, $quantity);
 
         add_action('wp_footer', function() use ($infoValues, $productData) {
             $settingsOptions = $this->config->getSettingsOptions();
@@ -128,11 +102,71 @@ class Widget implements WidgetInterface
 
                 $this->chat->event('cart-add', $productData);
 
-                echo 'a' . $this->chat->build();
+                echo '<div id="letochat-script">' . $this->chat->build() . '</div>';
             } catch (Exception $e) {
                 echo '';
             }
         });
+    }
+
+    public function sessionStoreForProductAjaxAdded($product_id)
+    {
+        global $wp_session;
+
+        $wp_session['letochat_product_id_ajax'] = $product_id;
+    }
+
+    public function addToCartEventAjaxCall($fragments)
+    {
+        global $wp_session;
+
+        $infoValues = [];
+        $productData = [];
+
+        if ($this->getUserId() !== 0) {
+            $infoValues['id'] = $this->getUserId();
+        }
+
+        $infoValues = $this->getInfoValues($infoValues);
+
+        if (!empty($wp_session['letochat_product_id_ajax'])) {
+            $product_id = $wp_session['letochat_product_id_ajax'];
+            $quantity = 1;
+
+            $productData = $this->getProductData($product_id, $quantity);
+        }
+
+        $settingsOptions = $this->config->getSettingsOptions();
+
+        $isEnabled = get_option($settingsOptions['enable_widget']);
+
+        if ($isEnabled === 'off') {
+            $fragments['div#letochat-script'] = '<div id="letochat-script"></div>';
+
+            return $fragments;
+        }
+
+        $isVisibleForAdmins = get_option($settingsOptions['visible_for_admins']);
+
+        if ($this->hideForAdmins($isVisibleForAdmins) === true) {
+            $fragments['div#letochat-script'] = '<div id="letochat-script"></div>';
+
+            return $fragments;
+        }
+
+        try {
+            $this->chat->infoValues($infoValues);
+
+            $this->chat->event('cart-add', $productData);
+
+            $chat = '<div id="letochat-script">' . $this->chat->build() . '</div>';
+        } catch (Exception $e) {
+            return $fragments;
+        }
+
+        $fragments['div#letochat-script'] = $chat;
+
+        return $fragments;
     }
 
     /**
@@ -215,5 +249,43 @@ class Widget implements WidgetInterface
         }
 
         return $infoValues;
+    }
+
+    /**
+     * @param int $product_id
+     * @param int $quantity
+     * @return array
+     */
+    private function getProductData($product_id, $quantity)
+    {
+        /**
+         * @var WC_Product $product
+         */
+        $product = wc_get_product($product_id);
+        $productName = $product->get_name();
+        $productPrice = $product->get_price();
+        $productImageId = $product->get_image_id();
+        $productImage = wp_get_attachment_url($productImageId);
+
+        $productData = [
+            'id' => $product_id,
+            'quantity' => $quantity,
+            'link' => $product->get_permalink(),
+            'currency' => get_woocommerce_currency(),
+        ];
+
+        if (!empty($productName)) {
+            $productData['name'] = $productName;
+        }
+
+        if (!empty($productImage)) {
+            $productData['image'] = $productImage;
+        }
+
+        if (!empty($productPrice)) {
+            $productData['price'] = $productPrice;
+        }
+
+        return $productData;
     }
 }

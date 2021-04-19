@@ -71,7 +71,9 @@ class LetoChat
 		$this->loader->add_action('wp_footer', $this->publicView, 'addLetoChatHookInFooter');
         $this->loader->add_action('rest_api_init', $this->publicView, 'registerApiRoutes');
         $this->loader->add_action('woocommerce_add_to_cart', $this->publicView, 'addToCartEvent', 10, 6);
-	}
+        $this->loader->add_action('woocommerce_ajax_added_to_cart', $this->publicView, 'sessionStoreForProductAjaxAdded', 10, 1);
+        $this->loader->add_filter('woocommerce_add_to_cart_fragments', $this->publicView, 'addToCartEventAjaxCall', 10, 1);
+    }
 
 	public function run()
 	{

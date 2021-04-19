@@ -54,4 +54,14 @@ class LetoChatPublic
     {
         do_action('letochat-script');
     }
+
+    public function sessionStoreForProductAjaxAdded($product_id)
+    {
+        $this->publicViewFacade->sessionStoreForProductAjaxAdded($product_id);
+    }
+
+    public function addToCartEventAjaxCall($fragments)
+    {
+        return $this->publicViewFacade->addToCartEventAjaxCall($fragments);
+    }
 }
