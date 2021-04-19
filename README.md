@@ -27,7 +27,6 @@
                 auth_secret -> AUTH SECRET FROM PLUGIN SETTINGS
             </td>
         </tr>
-        <hr/>
         <tr>
             <td>
                 Orders by user id
@@ -43,7 +42,6 @@
                 auth_secret -> AUTH SECRET FROM PLUGIN SETTINGS
             </td>
         </tr>
-        <hr/>
         <tr>
             <td>
                 Cart by user id
@@ -59,7 +57,6 @@
                 auth_secret -> AUTH SECRET FROM PLUGIN SETTINGS
             </td>
         </tr>
-        <hr/>
         <tr>
             <td>
                 Carts by users id
