@@ -74,12 +74,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LetoChat/plugin5.git",
-                "reference": "8ee26d1dc139e860b0d9c74304fd41f40fe16236"
+                "reference": "80f9e7febc2a891b27c2df23eda1cf05f315bb78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LetoChat/plugin5/zipball/8ee26d1dc139e860b0d9c74304fd41f40fe16236",
-                "reference": "8ee26d1dc139e860b0d9c74304fd41f40fe16236",
+                "url": "https://api.github.com/repos/LetoChat/plugin5/zipball/80f9e7febc2a891b27c2df23eda1cf05f315bb78",
+                "reference": "80f9e7febc2a891b27c2df23eda1cf05f315bb78",
                 "shasum": ""
             },
             "require": {
@@ -125,7 +125,7 @@
                 "issues": "https://www.letochat.com/support/technical",
                 "source": "https://github.com/LetoChat/plugin5/tree/main"
             },
-            "time": "2021-04-13T23:27:31+00:00"
+            "time": "2021-04-24T09:07:13+00:00"
         },
         {
             "name": "paragonie/random_compat",

@@ -70,6 +70,14 @@ class Widget implements WidgetInterface
         }
     }
 
+    /**
+     * @param $cart_item_key
+     * @param $product_id
+     * @param $quantity
+     * @param $variation_id
+     * @param $variation
+     * @param $cart_item_data
+     */
     public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
     {
         $infoValues = [];
@@ -109,6 +117,9 @@ class Widget implements WidgetInterface
         });
     }
 
+    /**
+     * @param $product_id
+     */
     public function sessionStoreForProductAjaxAdded($product_id)
     {
         global $wp_session;
@@ -116,6 +127,10 @@ class Widget implements WidgetInterface
         $wp_session['letochat_product_id_ajax'] = $product_id;
     }
 
+    /**
+     * @param $fragments
+     * @return mixed
+     */
     public function addToCartEventAjaxCall($fragments)
     {
         global $wp_session;
@@ -159,7 +174,9 @@ class Widget implements WidgetInterface
 
             $this->chat->event('cart-add', $productData);
 
-            $chat = '<div id="letochat-script">' . $this->chat->build() . '</div>';
+            $token = $this->chat->token();
+
+            $chat = sprintf('<div id="letochat-script"><script>window.LetoChat.updateToken("%s");</script></div>', $token);
         } catch (Exception $e) {
             return $fragments;
         }
@@ -268,7 +285,6 @@ class Widget implements WidgetInterface
         $productImage = wp_get_attachment_url($productImageId);
 
         $productData = [
-            'id' => $product_id,
             'quantity' => $quantity,
             'link' => $product->get_permalink(),
             'currency' => get_woocommerce_currency(),
