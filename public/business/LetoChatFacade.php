@@ -25,19 +25,30 @@ class LetoChatFacade extends AbstractFacade implements LetoChatFacadeInterface
         $this->getFactory()->createWidget()->addScript();
     }
 
+    /**
+     * @param $cart_item_key
+     * @param $product_id
+     * @param $quantity
+     * @param $variation_id
+     * @param $variation
+     * @param $cart_item_data
+     */
     public function addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data)
     {
         $this->getFactory()->createWidget()->addToCartEvent($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data);
     }
 
-    public function sessionStoreForProductAjaxAdded($product_id)
+    /**
+     * @param $product_id
+     */
+    public function sessionStoreForProductAdded($product_id)
     {
-        $this->getFactory()->createWidget()->sessionStoreForProductAjaxAdded($product_id);
+        $this->getFactory()->createWidget()->sessionStoreForProductAdded($product_id);
     }
 
-    public function addToCartEventAjaxCall($fragments)
+    public function updateChatTokenAjaxBehavior()
     {
-        return $this->getFactory()->createWidget()->addToCartEventAjaxCall($fragments);
+        $this->getFactory()->createWidget()->updateChatTokenAjaxBehavior();
     }
 
     public function registerApiRoutes()

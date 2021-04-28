@@ -4,6 +4,7 @@ namespace LetoChat\PublicView\Business\Model;
 
 use LetoChat\Config\AbstractConfigInterface;
 use LetoChat\Includes\LetoChatHelper;
+use LetoChat\Includes\PluginResponse;
 use \LetoChat\Widget as GenericLetoChatWidget;
 use \Exception;
 use \WC_Session_Handler;
@@ -25,14 +26,21 @@ class Widget implements WidgetInterface
     private $chat;
 
     /**
+     * @var PluginResponse
+     */
+    private $pluginResponse;
+
+    /**
      * Widget constructor.
      * @param AbstractConfigInterface $config
      * @param GenericLetoChatWidget $chat
+     * @param PluginResponse $pluginResponse
      */
-    public function __construct($config, $chat)
+    public function __construct($config, $chat, $pluginResponse)
     {
         $this->config = $config;
         $this->chat = $chat;
+        $this->pluginResponse = $pluginResponse;
     }
 
     public function addScript()
@@ -110,7 +118,9 @@ class Widget implements WidgetInterface
 
                 $this->chat->event('cart-add', $productData);
 
-                echo '<div id="letochat-script">' . $this->chat->build() . '</div>';
+                $token = $this->chat->token();
+
+                echo sprintf('<div id="letochat-script"><script>LetoChat("update_token", "%s");</script></div>', $token);
             } catch (Exception $e) {
                 echo '';
             }
@@ -120,23 +130,16 @@ class Widget implements WidgetInterface
     /**
      * @param $product_id
      */
-    public function sessionStoreForProductAjaxAdded($product_id)
+    public function sessionStoreForProductAdded($product_id)
     {
-        global $wp_session;
-
-        $wp_session['letochat_product_id_ajax'] = $product_id;
+        WC()->session->set('letochat_last_product_id', $product_id);
     }
 
-    /**
-     * @param $fragments
-     * @return mixed
-     */
-    public function addToCartEventAjaxCall($fragments)
+    public function updateChatTokenAjaxBehavior()
     {
-        global $wp_session;
+        wp_verify_nonce('ajax_letochat_public', $_POST['security']);
 
         $infoValues = [];
-        $productData = [];
 
         if ($this->getUserId() !== 0) {
             $infoValues['id'] = $this->getUserId();
@@ -144,29 +147,40 @@ class Widget implements WidgetInterface
 
         $infoValues = $this->getInfoValues($infoValues);
 
-        if (!empty($wp_session['letochat_product_id_ajax'])) {
-            $product_id = $wp_session['letochat_product_id_ajax'];
-            $quantity = 1;
+        $product_id = WC()->session->get('letochat_last_product_id');
 
-            $productData = $this->getProductData($product_id, $quantity);
+        if (empty($product_id)) {
+            $this->pluginResponse->isSuccess = false;
+
+            echo json_encode($this->pluginResponse);
+
+            wp_die();
         }
+
+        WC()->session->__unset('letochat_last_product_id');
+
+        $productData = $this->getProductData($product_id, 1);
 
         $settingsOptions = $this->config->getSettingsOptions();
 
         $isEnabled = get_option($settingsOptions['enable_widget']);
 
         if ($isEnabled === 'off') {
-            $fragments['div#letochat-script'] = '<div id="letochat-script"></div>';
+            $this->pluginResponse->isSuccess = false;
 
-            return $fragments;
+            echo json_encode($this->pluginResponse);
+
+            wp_die();
         }
 
         $isVisibleForAdmins = get_option($settingsOptions['visible_for_admins']);
 
         if ($this->hideForAdmins($isVisibleForAdmins) === true) {
-            $fragments['div#letochat-script'] = '<div id="letochat-script"></div>';
+            $this->pluginResponse->isSuccess = false;
 
-            return $fragments;
+            echo json_encode($this->pluginResponse);
+
+            wp_die();
         }
 
         try {
@@ -176,14 +190,21 @@ class Widget implements WidgetInterface
 
             $token = $this->chat->token();
 
-            $chat = sprintf('<div id="letochat-script"><script>window.LetoChat.updateToken("%s");</script></div>', $token);
+            $chat = sprintf('<script>LetoChat("update_token", "%s");</script>', $token);
+
+            $this->pluginResponse->isSuccess = true;
+            $this->pluginResponse->chat = $chat;
+
+            echo json_encode($this->pluginResponse);
+
+            wp_die();
         } catch (Exception $e) {
-            return $fragments;
+            $this->pluginResponse->isSuccess = false;
+
+            echo json_encode($this->pluginResponse);
+
+            wp_die();
         }
-
-        $fragments['div#letochat-script'] = $chat;
-
-        return $fragments;
     }
 
     /**

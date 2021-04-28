@@ -3,10 +3,10 @@
 namespace LetoChat\Includes;
 
 use LetoChat\Config\AbstractConfigInterface;
-use \WC_REST_Posts_Controller;
+use \WP_REST_Controller;
 use \WP_Error;
 
-abstract class BaseApi extends WC_REST_Posts_Controller
+abstract class BaseApi extends WP_REST_Controller
 {
     use LetoChatHelper;
 

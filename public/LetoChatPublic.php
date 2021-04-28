@@ -30,7 +30,12 @@ class LetoChatPublic
 
 	public function enqueue_scripts()
 	{
-//		wp_enqueue_script($this->pluginName, '', ['jquery'], $this->version, false );
+		wp_register_script($this->pluginName, PLUGIN_LETO_CHAT_URL . 'public/js/letochat.js', ['jquery'], $this->version, true);
+		wp_localize_script($this->pluginName, 'ajax_letochat_public_object', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'ajax_nonce' => wp_create_nonce('ajax_letochat_public'),
+        ]);
+		wp_enqueue_script($this->pluginName);
 	}
 
     public function addScript()
@@ -50,18 +55,13 @@ class LetoChatPublic
         $this->publicViewFacade->registerApiRoutes();
     }
 
-    public function addLetoChatHookInFooter()
+    public function sessionStoreForProductAdded($product_id)
     {
-        do_action('letochat-script');
+        $this->publicViewFacade->sessionStoreForProductAdded($product_id);
     }
 
-    public function sessionStoreForProductAjaxAdded($product_id)
+    public function updateChatTokenAjaxBehavior()
     {
-        $this->publicViewFacade->sessionStoreForProductAjaxAdded($product_id);
-    }
-
-    public function addToCartEventAjaxCall($fragments)
-    {
-        return $this->publicViewFacade->addToCartEventAjaxCall($fragments);
+        $this->publicViewFacade->updateChatTokenAjaxBehavior();
     }
 }

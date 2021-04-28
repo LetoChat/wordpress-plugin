@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e2f4a34dd0b0bf594f512da611e7728",
+    "content-hash": "b51ce39467920e42710467e123ad8863",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -74,12 +74,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LetoChat/plugin5.git",
-                "reference": "80f9e7febc2a891b27c2df23eda1cf05f315bb78"
+                "reference": "4574441cdab6c10aafdb25d7f98656d818330eac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LetoChat/plugin5/zipball/80f9e7febc2a891b27c2df23eda1cf05f315bb78",
-                "reference": "80f9e7febc2a891b27c2df23eda1cf05f315bb78",
+                "url": "https://api.github.com/repos/LetoChat/plugin5/zipball/4574441cdab6c10aafdb25d7f98656d818330eac",
+                "reference": "4574441cdab6c10aafdb25d7f98656d818330eac",
                 "shasum": ""
             },
             "require": {
@@ -125,7 +125,7 @@
                 "issues": "https://www.letochat.com/support/technical",
                 "source": "https://github.com/LetoChat/plugin5/tree/main"
             },
-            "time": "2021-04-24T09:07:13+00:00"
+            "time": "2021-04-28T12:41:31+00:00"
         },
         {
             "name": "paragonie/random_compat",
