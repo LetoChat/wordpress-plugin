@@ -235,16 +235,25 @@ class Widget implements WidgetInterface
             return get_current_user_id();
         }
 
-        $wcSessionHandler = new WC_Session_Handler();
-        $guestSession = $wcSessionHandler->get_session_cookie();
+        if (class_exists('WC_Session_Handler') === true) {
+            $wcSessionHandler = new WC_Session_Handler();
+            $guestSession = $wcSessionHandler->get_session_cookie();
 
-        if ($guestSession === false) {
-            return 0;
+            if ($guestSession === false) {
+                return 0;
+            }
+
+            return $guestSession[0];
         }
 
-        return $guestSession[0];
+        return 0;
     }
 
+    /**
+     * @param $infoValues
+     * @return mixed
+     * @throws Exception
+     */
     private function getInfoValues($infoValues)
     {
         $infoValues['logged'] = false;
