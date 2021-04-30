@@ -20,7 +20,7 @@
     }
   ],
   "require": {
-    "letoChat/plugin5": "dev-main",
+    "letochat/plugin5": "dev-main",
     "defuse/php-encryption": "^2.3"
   }
 }
